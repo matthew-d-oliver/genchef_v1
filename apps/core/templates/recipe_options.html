@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Recipe Options - We Need To Cook
+{% endblock %}
+
+{% block content %}
+<div class="recipe-options-content-section">
+  <ol role="list" class="user-recipes">
+    {% for recipe in recipe_options %}
+      <li class="recipe-opt-item">
+        <a href="{% url 'recipe_detail' recipe.id %}" class="new-recipe-link w-inline-block">
+          <div class="w-layout-blockcontainer recipe-opt w-container">
+            <h2 class="recipe-title">{{ recipe.title }}</h2>
+            <p class="recipe-description">
+              {{ recipe.description }}<br>({{ recipe.time }})
+            </p>
+          </div>
+        </a>
+      </li>
+    {% empty %}
+      <li>No recipe options found. Try refreshing!</li>
+    {% endfor %}
+  </ol>
+  <div class="button-wrapper">
+    <form method="POST" action="{% url 'menu' %}">
+      {% csrf_token %}
+      <button type="submit" class="button w-button">Refresh</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

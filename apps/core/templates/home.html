@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+GenChef Home - Welcome to GenChef, Let's Get Cooking!
+{% endblock %}
+
+{% block content %}
+<div id="Header" class="profile-header">
+    <div class="container-flex">
+      <div class="hero-content">
+        <h1 style="-webkit-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero-h1">Make recipes <span class="brand-span">fast</span> with what&#x27;s in your fridge, <span class="brand-span">that taste good</span></h1>
+        <p style="-webkit-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="hero-paragraph">Cook Smarter, Not Harder - tailor recipes to your tastes with just a few clicks</p>
+        <div style="-webkit-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-moz-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);-ms-transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);transform:translate3d(-25PX, 0, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0);opacity:0" class="button-wrapper">
+           <a href="{% url 'menu' %}" class="button create-recipe w-button">Create New Recipe</a>
+        </div>
+      </div>
+      <div class="hero-image-wrap"></div>
+    </div>
+</div>
+<div class="preferences-content-section">
+    <div class="container">
+        <div class="content-block">
+    <h2>Set Preferences and Save Recipes</h2>
+    <p>Sign up for a free account to save your recipes and to set personal preferences like Spice Tolerance and Kitchen Equipment!</p>
+    <a href="signup.html" class="button button-space w-button">Create Account<br></a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="content-block bg-text">
+            <h2>See your recipes</h2>
+            <a href="user/recipes.html" class="button button-space w-button">Recipes</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

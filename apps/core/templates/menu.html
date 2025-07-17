@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}
+GenChef Menu - Get Cookin!
+{% endblock %}
+
+{% block content %}
+<div class="recipe-header2">
+    <div class="container-flex">
+      <div class="title-wrap-centre">
+        <h1 class="header-h1">
+            Start with just an <span class="brand-span">Ingredient</span>, or <span class="text-span">describe </span>a dish you&#x27;re craving
+        </h1>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="container"></div>
+    <div class="w-layout-blockcontainer w-container">
+      <div class="w-form">
+        <form id="wf-form-recipegen" name="wf-form-recipegen" method="post" class="form">
+            {% csrf_token %}          
+          <div class="form-field">
+            <label for="name-2" id="w-node-e7cb6edb-119b-6e74-c571-a9a651b5f4cb-dd6c9d51" class="preferenceinputdesc">Recipe Title</label>
+            <div data-hover="true" data-delay="0" id="w-node-_5c595201-4e5e-60f3-e1a2-79187eeeb604-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Title or Description</div>
+                    <div class="relative">Describe your dish with a title like &#x27;southwestern salad&#x27; or with an explanation like &#x27;fresh southwestern style salad that&#x27;s easy to make&#x27;<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="text-field w-input" maxlength="256" name="recipe_title" data-name="Title" placeholder="Southwestern Cobb Salad with Grilled Chicken and lite dressing" type="text", id = "title">
+          <div><label for="name" id="w-node-_9f20c026-7412-47f2-6822-e09ebeb68c6e-dd6c9d51" class="field-label-2">Describe what you want with a title, or just list your ingredients</label></div>
+          <div class="form-field"><label for="name" id="w-node-_8f313e86-b74e-0094-836b-4f121a28167e-dd6c9d51" class="preferenceinputdesc">Produce</label>
+            <div data-hover="true" data-delay="0" id="w-node-a275ff20-9ab3-d8a6-ec98-2f0fdca93bb6-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Fresh produce to be used</div>
+                    <div class="relative">List all fresh vegetables, or fruit you have available that you would like to use in this recipe (comma separated)<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="w-input" maxlength="256" name="produce" data-name="Produce" placeholder="Lettuce, Avocado, Corn, Canned Beans" type="text" id="produce">
+          <div class="form-field"><label for="name" id="w-node-bfd9222e-d506-8711-9cb3-e462ae3595df-dd6c9d51" class="preferenceinputdesc">Protein</label>
+            <div data-hover="true" data-delay="0" id="w-node-b8aa05ed-7c5e-5ce4-4e01-f81e94cdc28a-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Source of Protein</div>
+                    <div class="relative">The meat or meat alternative to be used in the dish, such as Chicken, Fish, Tofu, Beef or something specific, like Sweet Italian Sausage<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="w-input" maxlength="256" name="protein" data-name="Protein" placeholder="Hot Rotisserie Chicken" type="text" id="protein">
+          <div class="form-field"><label for="name" id="w-node-d88682f3-6a8a-a334-2e47-fa4c5c10a7e4-dd6c9d51" class="preferenceinputdesc">Carb</label>
+            <div data-hover="true" data-delay="0" id="w-node-_5a468f01-7ba0-0c28-1dc3-2db2b10a752b-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Carbohydrate, Grain or Starch</div>
+                    <div class="relative">Source of carbs, whether it&#x27;s the base of the dish like noodles in ramen, the bread on a sandwich or rice wrapped around sushi<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="w-input" maxlength="256" name="carb" data-name="Carb" placeholder="Brown rice, Bread Crumbs" type="text" id="carb">
+          <div class="form-field"><label for="name" id="w-node-e661f0f2-e6dd-563f-0c17-5c1c8e3a4b5a-dd6c9d51" class="preferenceinputdesc">Dish Style</label>
+            <div data-hover="true" data-delay="0" id="w-node-_93ba3e56-a7fd-36a0-6b0e-e5b9cd38abc4-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Style/Type of Recipe</div>
+                    <div class="relative">The format you&#x27;d like the recipe to take, Salad or Sandwich, Entree or Side Dish.<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="w-input" maxlength="256" name="dish_style" data-name="Dish Style" placeholder="e.g. Salad, Entree, Soup, Dessert" type="text" id="dish_style">
+          <div class="form-field"><label for="name" id="w-node-_78ffc6c3-9965-7480-44d6-cd9f1f8dbd42-dd6c9d51" class="preferenceinputdesc">Cuisine</label>
+            <div data-hover="true" data-delay="0" id="w-node-_4aea8f19-2d6c-5d34-e4fb-07072f8ad21a-dd6c9d51" class="field-tooltip w-dropdown">
+              <div class="dropdown-toggle w-dropdown-toggle">
+                <div class="preferenceinputdesc recipeinputdesc">ⓘ</div>
+              </div>
+              <nav class="dropdown-list w-dropdown-list">
+                <div data-cy="step5" class="tooltip-wrapper">
+                  <div class="tooltip-container">
+                    <div class="tooltip-title">Flavor Profile or Dietary Choice</div>
+                    <div class="relative">Pick a cuisine style or dietary option to customize the flavor profile or dietary needs of your recipe<br></div>
+                  </div>
+                  <div class="tooltip-diamond bottom"></div>
+                </div>
+              </nav>
+            </div>
+          </div><input class="w-input" maxlength="256" name="cuisine" data-name="Cuisine" placeholder="e.g. Southwestern, Asian, Paleo" type="text" id="cuisine">
+        {% if user.is_authenticated %}
+        <div class="form-field">
+          <label class="w-checkbox checkbox-field"><input type="checkbox" name="Preferences" id="Preferences" data-name="Preferences" class="w-checkbox-input">
+              <span class="preferenceinputdesc preferences-copy w-form-label" for="Preferences">Include Prefrences?</span>
+          </label>
+        </div>
+        {% else %}
+        <div class="form-field">
+          <div class="preferenceinputdesc plssignin">Sign-in or Create account to add more preferences</div>
+        </div>
+        {% endif %}  
+        <div class="form-field">
+          <input type="submit" data-wait="Please wait..." class="recipe-submit-button w-button" value="submit">
+        </div>
+        
+        <!--  </form>
+        <div id="ai-content-placeholder" style="display: none;"></div>
+        <div class="w-form-done">
+          <div id="success-message" style="display: none;">
+            <p>
+              <strong>See recipe options below</strong> or 
+              <a href="#" id="change-ingredients-link">change your ingredients</a>.
+            </p>
+          </div>
+        </div>
+        <div class="w-form-fail">
+          <div>Oops! Something went wrong while submitting the form.</div>
+        </div> 
+        -->
+
+          </form>
+          <div id="ai-content-placeholder" style="display: none;">
+            <div class="recipe-options-content-section">
+              <ol role="list" class="user-recipes" id="recipe-options-list">
+                <!-- Recipes will be dynamically inserted here -->
+              </ol>
+              <div class="button-wrapper">
+                <button id="refresh-options" class="button w-button">Refresh</button>
+              </div>
+            </div>
+          </div>
+          <div class="w-form-done">
+            <div id="success-message" style="display: none;">
+              <p>
+                <strong>See recipe options below</strong> or 
+                <a href="#" id="change-ingredients-link">change your ingredients</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

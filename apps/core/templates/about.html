@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+GenChef About
+{% endblock %}
+
+{% block content %}
+<div class="recipe-header2">
+    <div class="container-flex">
+      <div class="title-wrap-centre">
+        <h1 class="header-h1">About GenChef</h1>
+      </div>
+    </div>
+  </div>
+  <div class="container-tight">
+    <div class="title-wrap-left">
+      <div class="title-grey">The Problems:</div>
+      <div>
+        <h3 class="about-section-prob">Decision Fatigue<br></h3>
+        <h3 class="about-section-prob-exp">It&#x27;s hard to decide what to cook<br></h3>
+      </div>
+      <div>
+        <h3 class="about-section-prob">Food Waste<br></h3>
+        <h3 class="about-section-prob-exp">Much of the fresh produce people buy go to the landfill because they don&#x27;t use it in time<br></h3>
+      </div>
+      <div>
+        <h3 class="about-section-prob">Seasonal Ingredients</h3>
+        <h3 class="about-section-prob-exp">Local, Organic produce fades faster, and can be hard to use (what even is a sunchoke)<br></h3>
+      </div>
+      <div>
+        <h3 class="about-section-prob">Awful Recipe Blogs</h3>
+        <h3 class="about-section-prob-exp">Online recipe &#x27;MfA&#x27; (Made for Advertising) sites are awful to use, and excessively long to show you display ads<br></h3>
+      </div>
+      <div class="title-grey">The STory:</div>
+    </div>
+    <div class="block">
+      <p class="p1">Two of my big passions in life are playing with new technologies, and cooking, So naturally when ChatGPT became hot in early 2023, the first prompts I asked it were for custom recipes. It was exceedingly proficient at generating unique requests with accurate measurements and also, was great at swapping ingredients. The ultimate test I gave it was a Cast Iron pan pizza, which had specific time &amp; ingredient requests, which was hard to create my own specific one from adapting many different recipes I found online to fit my equipment &amp; ingredients.<br>‍<br>The pizza came out great, and ChatGPT quickly became a core part of my recipe development process, whether it was checking how long to sear a steak or what the difference between green onion and scallions is.<br>I quickly through together a Flask App in AWS as a proof of concept, and then got to work on this site with Django &amp; Webflow, and (6+ months) later it was live!<br>‍<br>While other websites exist with similar purposes, and AI Chat tools might be easier for a quick cooking tip, my hope for this website is to help people become better chefs, and promote cooking with fresh ingredients. My other project that <em>pairs well</em> with this site is OliversGrocers.com, which promotes Local ingredients, check them out, and reach out with any questions/comments about the website!</p>
+      <div>
+        <div class="about-page-links">
+          <a href="mailto:oliversgrocers@gmail.com?subject=About%20the%20GenChef%20Site" class="w-inline-block">
+            <div>Oliversgrovers@gmail.com</div>
+          </a>
+        </div>
+        <div class="about-page-links">
+          <a href="https://www.linkedin.com/in/matthew-d-oliver/" target="_blank" class="w-inline-block">
+            <div class="text-block-84">Matt O LinkedIn</div>
+          </a>
+        </div>
+        <div class="about-page-links">
+          <a href="http://Oliversgrocers.com" target="_blank" class="w-inline-block">
+            <div class="text-block-84">Oliversgrocers.com</div>
+          </a>
+        </div>
+      </div>
+      <div class="block-detail"></div>
+    </div>
+</div>
+{% endblock %}
