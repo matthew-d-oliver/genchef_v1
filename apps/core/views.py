@@ -121,7 +121,7 @@ def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     return render(request, "recipe_detail.html", {"recipe": recipe})
 
-'''
+
 def recipe_options(request, prompt_id):
     """Handles recipe option selection and fetches the full recipe."""
     if request.method == "POST":
@@ -157,4 +157,3 @@ def recipe_options(request, prompt_id):
             return JsonResponse({"error": "Failed to fetch full recipe details."}, status=500)
 
     return JsonResponse({"error": "Invalid request."}, status=400)
-'''
