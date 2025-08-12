@@ -83,35 +83,36 @@ jobs:
             "cd /home/ubuntu/genchef_v1",
             "git pull origin main",
             "echo \"Creating .env file...\"",
-            "cat > .env << EOL",
+            "cat > .env << EOF",
             "SECRET_KEY=${{ secrets.SECRET_KEY }}",
             "DB_PASSWORD=${{ secrets.DB_PASSWORD }}",
             "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}",
             "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}",
             "AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }}",
             "AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }}",
-            "EOL",
+            "EOF",
             "docker-compose down || true",
             "docker-compose build --no-cache",
             "docker-compose up -d",
-            "echo \"Configuring nginx...\"",
-            "sudo bash -c \"cat > /etc/nginx/sites-available/django << EOL",
+            "echo \"Creating nginx config...\"",
+            "sudo tee /etc/nginx/sites-available/django > /dev/null << EOF",
             "server {",
             "    listen 80;",
             "    server_name _;",
             "    client_max_body_size 100M;",
             "    location / {",
             "        proxy_pass http://localhost:8080;",
-            "        proxy_set_header Host \\\\$host;",
-            "        proxy_set_header X-Real-IP \\\\$remote_addr;",
-            "        proxy_set_header X-Forwarded-For \\\\$proxy_add_x_forwarded_for;",
-            "        proxy_set_header X-Forwarded-Proto \\\\$scheme;",
+            "        proxy_set_header Host \\$host;",
+            "        proxy_set_header X-Real-IP \\$remote_addr;",
+            "        proxy_set_header X-Forwarded-For \\$proxy_add_x_forwarded_for;",
+            "        proxy_set_header X-Forwarded-Proto \\$scheme;",
             "    }",
             "}",
-            "EOL\"",
+            "EOF",
             "sudo rm -f /etc/nginx/sites-enabled/default",
             "sudo ln -sf /etc/nginx/sites-available/django /etc/nginx/sites-enabled/",
-            "sudo nginx -t && sudo systemctl reload nginx",
+            "sudo nginx -t",
+            "sudo systemctl reload nginx",
             "echo \"Waiting for services to start...\"",
             "sleep 30",
             "docker-compose ps",
@@ -168,40 +169,40 @@ jobs:
         
         echo "Deployment completed successfully!"
 
-  sync-s3:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+  # sync-s3:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     
-    steps:
-    - uses: actions/checkout@v3
+  #   steps:
+  #   - uses: actions/checkout@v3
     
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_S3_REGION_NAME }}
+  #   - name: Configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v2
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: ${{ secrets.AWS_S3_REGION_NAME }}
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.12'
     
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install -r requirements.txt
     
-    - name: Collect static files to S3
-      env:
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        USE_S3: 'True'
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
-        AWS_S3_REGION_NAME: ${{ secrets.AWS_S3_REGION_NAME }}
-      run: |
-        echo "Syncing static files to S3..."
-        python manage.py collectstatic --noinput
-        echo "Static files synced successfully!"
+  #   - name: Collect static files to S3
+  #     env:
+  #       SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  #       USE_S3: 'True'
+  #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       AWS_STORAGE_BUCKET_NAME: ${{ secrets.AWS_STORAGE_BUCKET_NAME }}
+  #       AWS_S3_REGION_NAME: ${{ secrets.AWS_S3_REGION_NAME }}
+  #     run: |
+  #       echo "Syncing static files to S3..."
+  #       python manage.py collectstatic --noinput
+  #       echo "Static files synced successfully!"
