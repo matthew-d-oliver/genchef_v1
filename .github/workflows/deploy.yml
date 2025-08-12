@@ -77,7 +77,7 @@ jobs:
             "echo \"Starting deployment process...\"",
             "export HOME=/home/ubuntu",
             "cd /home/ubuntu",
-            "if [ ! -d \"genchef_v1\" ]; then git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git genchef_v1; fi",
+            "if [ ! -d \"genchef_v1\" ]; then git clone matthew-d-oliver/genchef_v1.git genchef_v1; fi",
             "sudo chown -R ubuntu:ubuntu /home/ubuntu/genchef_v1",
             "git config --global --add safe.directory /home/ubuntu/genchef_v1",
             "cd /home/ubuntu/genchef_v1",
