@@ -183,7 +183,7 @@ else:
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_DIRS = [
-        BASE_DIR / 'core/static',
+        BASE_DIR / 'apps' / 'core' / 'static',  # Changed to match your structure
     ]
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
