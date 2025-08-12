@@ -104,16 +104,6 @@ if os.getenv('USE_SQLITE', 'False').lower() == 'true':
 
 '''
 # Database configuration for AWS RDS - change for later deployment
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'grocerdb',
-        'USER': 'grocerdataman',
-        'PASSWORD': 'Fucktruff01l!',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
 '''
 
 AUTH_USER_MODEL = 'core.CustomUser'  # Replace 'core' with your app name if different

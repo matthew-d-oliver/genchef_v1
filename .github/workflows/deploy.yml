@@ -75,18 +75,19 @@ jobs:
           --document-name "AWS-RunShellScript" \
           --parameters 'commands=[
             "echo \"Starting deployment process...\"",
+            "export HOME=/home/ubuntu",
+            "cd /home/ubuntu",
+            "if [ ! -d \"genchef_v1\" ]; then git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git genchef_v1; fi",
             "sudo chown -R ubuntu:ubuntu /home/ubuntu/genchef_v1",
             "git config --global --add safe.directory /home/ubuntu/genchef_v1",
             "cd /home/ubuntu/genchef_v1",
             "git pull origin main",
-            "if [ ! -d \"venv\" ]; then python3 -m venv venv; fi",
-            ". venv/bin/activate",
-            "pip install -r requirements.txt",
-            "python3 manage.py migrate",
-            "python3 manage.py collectstatic --noinput",
-            "sudo systemctl daemon-reload",
-            "if systemctl is-active --quiet gunicorn; then sudo systemctl restart gunicorn; else echo \"Gunicorn service not found - you may need to set it up\"; fi",
-            "if systemctl is-active --quiet nginx; then sudo systemctl restart nginx; else echo \"Nginx service not found - you may need to set it up\"; fi",
+            "docker-compose down || true",
+            "docker-compose build --no-cache",
+            "docker-compose up -d",
+            "echo \"Waiting for services to start...\"",
+            "sleep 30",
+            "docker-compose ps",
             "echo \"Deployment completed successfully!\""
           ]' \
           --query 'Command.CommandId' \

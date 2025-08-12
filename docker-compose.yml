@@ -4,28 +4,36 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "80:8000"
     volumes:
       - .:/app
+      - static_volume:/app/staticfiles
     environment:
-      - DEBUG=True
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY}
       - DB_NAME=grocerdb
       - DB_USER=grocerdataman
-      - DB_PASSWORD=Fucktruff01l!
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=db
       - DB_PORT=5432
+      - USE_S3=True
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME}
+      - AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME}
     depends_on:
       - db
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             python manage.py collectstatic --noinput &&
+             gunicorn genchef_v1.wsgi:application --bind 0.0.0.0:8000"
 
   db:
     image: postgres:13
     environment:
       POSTGRES_DB: grocerdb
       POSTGRES_USER: grocerdataman
-      POSTGRES_PASSWORD: Fucktruff01l!
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -33,3 +41,4 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
