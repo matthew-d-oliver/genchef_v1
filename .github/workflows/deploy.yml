@@ -46,8 +46,8 @@ jobs:
         DB_PASSWORD: 'postgres'
         DB_HOST: 'localhost'
         DB_PORT: '5432'
-        USE_SQLITE: 'False'
-        USE_S3: 'False'
+        USE_SQLITE: 'True'
+        USE_S3: 'True'
       run: |
         python manage.py test
 
@@ -94,6 +94,10 @@ jobs:
             "docker-compose down || true",
             "docker-compose build --no-cache",
             "docker-compose up -d",
+            "echo \"Syncing static files to S3 (only changed files)...\"",
+            "docker-compose exec -T web python manage.py collectstatic --noinput --clear",
+            "echo \"Syncing custom static files directly to S3...\"",
+            "aws s3 sync ./apps/core/static/ s3://${{ secrets.AWS_STORAGE_BUCKET_NAME }}/static/ --delete --cache-control max-age=86400",
             "echo \"Creating nginx config...\"",
             "sudo tee /etc/nginx/sites-available/django > /dev/null << EOF",
             "server {",

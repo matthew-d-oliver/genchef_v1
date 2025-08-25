@@ -160,6 +160,10 @@ AWS_QUERYSTRING_AUTH = False
 # Static files configuration
 USE_S3 = os.getenv('USE_S3', 'False').lower() == 'true'
 
+STATICFILES_DIRS = [
+        BASE_DIR / 'apps' / 'core' / 'static',  # Changed to match your structure
+    ]
+
 if USE_S3:
     # S3 Static files
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
@@ -172,9 +176,7 @@ else:
     # Local static files (for development)
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_DIRS = [
-        BASE_DIR / 'apps' / 'core' / 'static',  # Changed to match your structure
-    ]
+    
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
     # Local media files
