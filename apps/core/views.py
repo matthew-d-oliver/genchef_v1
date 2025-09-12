@@ -35,9 +35,11 @@ class FetchAIContentView(APIView):
                 "title": form_data.get("title"),
                 "produce": form_data.get("produce"),
                 "protein": form_data.get("protein"),
+                "carb": form_data.get("carb"),
                 "dish_style": form_data.get("dish_style"),
-                "cuisine_style": form_data.get("cuisine_style"),
-                "servings": form_data.get("servings"),
+                "cuisine": form_data.get("cuisine"),
+                #not using servings for now
+                # "servings": form_data.get("servings"),
             },
         }
 
@@ -89,8 +91,9 @@ def menu(request):
             prompt = form.save()
 
             # Call Lambda to generate recipe options
+            # removed extra set up brackets whih could be needed for lambda
             payload = {
-                {
+                
                 "body": {
                     "usr": "usr_input",
                     "task": "get_recipe",
@@ -103,7 +106,6 @@ def menu(request):
                         "cuisine": prompt.cuisine,
                         }
                     }
-                }
             }
             response = requests.post(GENERATE_RECIPE_LAMBDA, json=payload)
             if response.status_code == 200:
