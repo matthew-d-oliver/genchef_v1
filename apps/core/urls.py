@@ -10,6 +10,6 @@ urlpatterns = [
     path('signup/', TemplateView.as_view(template_name="signup.html"), name='signup'),
     path('recipe/<int:recipe_id>/', recipe_detail, name='recipe_detail'),
     path('recipe_options/<int:prompt_id>/', recipe_options, name='recipe_options'),
-path('user/profile', TemplateView.as_view(template_name="user/profile.html"), name='user_profile'),
+    path('user/profile', TemplateView.as_view(template_name="user/profile.html"), name='user_profile'),
     path('api/fetch-ai-content/', FetchAIContentView.as_view(), name='fetch_ai_content'),
 ]

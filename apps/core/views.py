@@ -1,21 +1,23 @@
 import requests
 import json
+import logging
+import traceback
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
-# Create your views here.
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from .models import Recipe, RecipePrompt
-from .forms import RecipePromptForm  # Define this form for the /menu page
+from .forms import RecipePromptForm
 
 #rest-framework packages
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 # Constants for Lambda endpoints
 GENERATE_RECIPE_LAMBDA = "https://neg7rh9vsj.execute-api.us-east-2.amazonaws.com/Testy/generate_recipe"
@@ -26,16 +28,26 @@ class FetchAIContentView(APIView):
     Handles the API call to the Lambda function for recipe generation.
     """
     def post(self, request, *args, **kwargs):
-        print("=== FetchAIContentView Debug START ===")
-        print(f"Request method: {request.method}")
-        print(f"Request content type: {request.content_type}")
-        print(f"Request data: {request.data}")
-        print(f"Request body: {request.body}")
+        # Use both print and logging to ensure we see output
+        print("=== FetchAIContentView Debug START ===", flush=True)
+        logger.error("=== FetchAIContentView Debug START ===")
+        
+        print(f"Request method: {request.method}", flush=True)
+        print(f"Request content type: {request.content_type}", flush=True)
+        print(f"Request data: {request.data}", flush=True)
+        
+        logger.error(f"Request method: {request.method}")
+        logger.error(f"Request data: {request.data}")
         
         try:
             form_data = request.data
-            print(f"Form data extracted: {form_data}")
+            print(f"Form data extracted: {form_data}", flush=True)
+            logger.error(f"Form data extracted: {form_data}")
 
+            # Check if requests module is available
+            print("Testing requests import...", flush=True)
+            logger.error("Testing requests import...")
+            
             # Prepare the payload for Lambda
             payload = {
                 "usr": request.user.username if request.user.is_authenticated else "guest",
@@ -50,38 +62,48 @@ class FetchAIContentView(APIView):
                 },
             }
             
-            print(f"Payload prepared: {payload}")
-            print(f"Lambda endpoint: {GENERATE_RECIPE_LAMBDA}")
+            print(f"Payload prepared: {payload}", flush=True)
+            logger.error(f"Payload prepared: {payload}")
+            print(f"Lambda endpoint: {GENERATE_RECIPE_LAMBDA}", flush=True)
+            logger.error(f"Lambda endpoint: {GENERATE_RECIPE_LAMBDA}")
 
             # Call the Lambda function
-            print("Making request to Lambda...")
+            print("Making request to Lambda...", flush=True)
+            logger.error("Making request to Lambda...")
+            
             response = requests.post(GENERATE_RECIPE_LAMBDA, json=payload, timeout=30)
             
-            print(f"Lambda response status: {response.status_code}")
-            print(f"Lambda response headers: {dict(response.headers)}")
-            print(f"Lambda response text: {response.text}")
+            print(f"Lambda response status: {response.status_code}", flush=True)
+            logger.error(f"Lambda response status: {response.status_code}")
+            print(f"Lambda response text: {response.text[:200]}...", flush=True)
+            logger.error(f"Lambda response text: {response.text[:200]}...")
             
             if response.status_code == 200:
                 response_data = response.json()
-                print(f"Lambda response JSON: {response_data}")
+                print(f"Lambda response JSON keys: {list(response_data.keys()) if isinstance(response_data, dict) else 'Not a dict'}", flush=True)
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
                 error_msg = f"Lambda returned {response.status_code}: {response.text}"
-                print(f"Lambda error: {error_msg}")
+                print(f"Lambda error: {error_msg}", flush=True)
+                logger.error(f"Lambda error: {error_msg}")
                 return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 
         except requests.RequestException as e:
             error_msg = f"Request exception: {str(e)}"
-            print(error_msg)
+            print(f"REQUEST EXCEPTION: {error_msg}", flush=True)
+            logger.error(f"REQUEST EXCEPTION: {error_msg}")
+            traceback.print_exc()
             return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             error_msg = f"Unexpected exception: {str(e)}"
-            print(error_msg)
-            import traceback
+            print(f"UNEXPECTED EXCEPTION: {error_msg}", flush=True)
+            logger.error(f"UNEXPECTED EXCEPTION: {error_msg}")
+            print(f"Exception type: {type(e)}", flush=True)
             traceback.print_exc()
             return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         finally:
-            print("=== FetchAIContentView Debug END ===")
+            print("=== FetchAIContentView Debug END ===", flush=True)
+            logger.error("=== FetchAIContentView Debug END ===")
 
 def menu(request):
     """Handles the /menu form and generates recipe options."""
