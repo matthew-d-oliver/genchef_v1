@@ -87,12 +87,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // Async function to fetch AI content
     async function fetchAIContent(formData) {
         try {
+            // Convert FormData to JSON object
+            const jsonData = {};
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+            
+            console.log("Sending data:", jsonData); // Debug log
+            
             const response = await fetch("/api/fetch-ai-content/", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(), // Include CSRF token
+                },
+                body: JSON.stringify(jsonData), // Send as JSON
             });
             
-            if (!response.ok) throw new Error("Failed to fetch AI content");
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Server response:", errorText);
+                throw new Error(`Failed to fetch AI content: ${response.status}`);
+            }
     
             const data = await response.json();
             const recipeOptions = data.options || [];
