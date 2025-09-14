@@ -1,8 +1,11 @@
+import requests
+import json
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 from django.http import JsonResponse
-import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from .models import Recipe, RecipePrompt
@@ -17,70 +20,68 @@ from rest_framework.decorators import api_view
 # Constants for Lambda endpoints
 GENERATE_RECIPE_LAMBDA = "https://neg7rh9vsj.execute-api.us-east-2.amazonaws.com/Testy/generate_recipe"
 
-
-
-
+@method_decorator(csrf_exempt, name='dispatch')
 class FetchAIContentView(APIView):
     """
     Handles the API call to the Lambda function for recipe generation.
     """
     def post(self, request, *args, **kwargs):
-        form_data = request.data  # Get form data from the request body
-
-        # Prepare the payload for Lambda
-        payload = {
-            "usr": request.user.username if request.user.is_authenticated else "guest",
-            "task": "get_options",
-            "ingredients": {
-                "title": form_data.get("title"),
-                "produce": form_data.get("produce"),
-                "protein": form_data.get("protein"),
-                "carb": form_data.get("carb"),
-                "dish_style": form_data.get("dish_style"),
-                "cuisine": form_data.get("cuisine"),
-                #not using servings for now
-                # "servings": form_data.get("servings"),
-            },
-        }
-
-        # Call the Lambda function
-        try:
-            response = requests.post(GENERATE_RECIPE_LAMBDA, json=payload)
-            if response.status_code == 200:
-                return Response(response.json(), status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "Failed to fetch AI content"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except requests.RequestException as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-## old function for calling recipe API
-# def fetch_ai_content(request):
-#     if request.method == "POST":
-#         form_data = request.POST.dict()  # Get form data
+        print("=== FetchAIContentView Debug START ===")
+        print(f"Request method: {request.method}")
+        print(f"Request content type: {request.content_type}")
+        print(f"Request data: {request.data}")
+        print(f"Request body: {request.body}")
         
-#         # Prepare the payload for Lambda
-#         payload = {
-#                 "usr": request.user.username if request.user.is_authenticated else "guest",
-#                 "task" : "get_options",
-#                 "ingredients": {
-#                     "title": form_data.get("title"),
-#                     "produce": form_data.get("produce"),
-#                     "protein": form_data.get("protein"),
-#                     "dish_style": form_data.get("dish_style"),
-#                     "cuisine_style": form_data.get("cuisine_style"),
-#                     "servings": form_data.get("servings"),
-#             }
-#         }
+        try:
+            form_data = request.data
+            print(f"Form data extracted: {form_data}")
 
-#         # Call the Lambda function
-#         response = requests.post(GENERATE_RECIPE_LAMBDA, json=payload)
-#         if response.status_code == 200:
-#             return JsonResponse(response.json())
-#         else:
-#             return JsonResponse({"error": "Failed to fetch AI content"}, status=500)
+            # Prepare the payload for Lambda
+            payload = {
+                "usr": request.user.username if request.user.is_authenticated else "guest",
+                "task": "get_options",
+                "ingredients": {
+                    "title": form_data.get("title"),
+                    "produce": form_data.get("produce"),
+                    "protein": form_data.get("protein"),
+                    "carb": form_data.get("carb"),
+                    "dish_style": form_data.get("dish_style"),
+                    "cuisine": form_data.get("cuisine"),
+                },
+            }
+            
+            print(f"Payload prepared: {payload}")
+            print(f"Lambda endpoint: {GENERATE_RECIPE_LAMBDA}")
 
-#     return JsonResponse({"error": "Invalid request method"}, status=400)
-
+            # Call the Lambda function
+            print("Making request to Lambda...")
+            response = requests.post(GENERATE_RECIPE_LAMBDA, json=payload, timeout=30)
+            
+            print(f"Lambda response status: {response.status_code}")
+            print(f"Lambda response headers: {dict(response.headers)}")
+            print(f"Lambda response text: {response.text}")
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                print(f"Lambda response JSON: {response_data}")
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                error_msg = f"Lambda returned {response.status_code}: {response.text}"
+                print(f"Lambda error: {error_msg}")
+                return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+        except requests.RequestException as e:
+            error_msg = f"Request exception: {str(e)}"
+            print(error_msg)
+            return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            error_msg = f"Unexpected exception: {str(e)}"
+            print(error_msg)
+            import traceback
+            traceback.print_exc()
+            return Response({"error": error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        finally:
+            print("=== FetchAIContentView Debug END ===")
 
 def menu(request):
     """Handles the /menu form and generates recipe options."""
