@@ -46,7 +46,8 @@ LOGGING = {
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(BASE_DIR / "apps"))
+# sys.path.insert(0, str(BASE_DIR / "apps"))
+# Not sure what the line above does, commenting out for now.
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -70,7 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',  # Add this if you haven't already
+    'rest_framework', 
     'apps.core',
     'storages',
 ]
