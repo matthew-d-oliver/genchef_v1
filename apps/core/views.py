@@ -20,7 +20,7 @@ from rest_framework import status
 logger = logging.getLogger(__name__)
 
 # Constants for Lambda endpoints
-GENERATE_RECIPE_LAMBDA = "https://neg7rh9vsj.execute-api.us-east-2.amazonaws.com/Testy/generate_recipe"
+GENERATE_RECIPE_LAMBDA = "https://52hzerdmb3.execute-api.us-east-1.amazonaws.com/default/generate_recipe"
 
 @method_decorator(csrf_exempt, name='dispatch')
 class FetchAIContentView(APIView):
