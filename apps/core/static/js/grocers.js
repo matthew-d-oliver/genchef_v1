@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const listItem = document.createElement("li");
                     listItem.className = "recipe-opt-item";
                     listItem.innerHTML = `
-                        <a href="#" class="new-recipe-link w-inline-block">
+                        <a href="#" class="new-recipe-link w-inline-block" data-recipe='${JSON.stringify(recipe)}'>
                           <div class="w-layout-blockcontainer recipe-opt w-container">
                             <h2 class="recipe-title">${recipe.title}</h2>
                             <p class="recipe-description">
@@ -135,6 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
                           </div>
                         </a>
                     `;
+                    
+                    // Add click handler to generate full recipe
+                    const link = listItem.querySelector('.new-recipe-link');
+                    link.addEventListener('click', async (event) => {
+                        event.preventDefault();
+                        await generateFullRecipe(recipe);
+                    });
+                    
                     recipeOptionsList.appendChild(listItem);
                 });
             } else {
@@ -148,6 +156,59 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error("Error fetching AI content:", error);
             alert("An error occurred. Please try again.");
+        }
+    }
+
+    // Generate full recipe from selected option
+    async function generateFullRecipe(selectedOption) {
+        try {
+            // Get the original form data from localStorage
+            const formDataSnapshot = JSON.parse(localStorage.getItem("formDataSnapshot")) || {};
+            
+            // Prepare payload for full recipe generation
+            const payload = {
+                task: "get_recipe",
+                selected_option: selectedOption,
+                original_ingredients: formDataSnapshot
+            };
+            
+            console.log("Generating full recipe with payload:", payload);
+            
+            const response = await fetch("/api/fetch-ai-content/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+                body: JSON.stringify(payload),
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Failed to generate recipe: ${response.status}`);
+            }
+            
+            const recipeData = await response.json();
+            
+            // Create recipe and redirect to recipe detail page
+            const createResponse = await fetch("/api/create-recipe/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken(),
+                },
+                body: JSON.stringify(recipeData),
+            });
+            
+            if (createResponse.ok) {
+                const result = await createResponse.json();
+                window.location.href = `/recipe/${result.recipe_id}/`;
+            } else {
+                throw new Error("Failed to save recipe");
+            }
+            
+        } catch (error) {
+            console.error("Error generating full recipe:", error);
+            alert("Failed to generate recipe. Please try again.");
         }
     }
 

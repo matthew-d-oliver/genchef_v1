@@ -49,18 +49,38 @@ class FetchAIContentView(APIView):
             logger.error("Testing requests import...")
             
             # Prepare the payload for Lambda
-            payload = {
-                "usr": request.user.username if request.user.is_authenticated else "guest",
-                "task": "get_options",
-                "ingredients": {
-                    "title": form_data.get("title"),
-                    "produce": form_data.get("produce"),
-                    "protein": form_data.get("protein"),
-                    "carb": form_data.get("carb"),
-                    "dish_style": form_data.get("dish_style"),
-                    "cuisine": form_data.get("cuisine"),
-                },
-            }
+            task = form_data.get("task", "get_options")  # Default to get_options
+            
+            if task == "get_recipe":
+                # For full recipe generation from selected option
+                selected_option = form_data.get("selected_option", {})
+                original_ingredients = form_data.get("original_ingredients", {})
+                
+                payload = {
+                    "task": "get_recipe",
+                    "ingredients": {
+                        "title": selected_option.get("title", original_ingredients.get("title")),
+                        "produce": original_ingredients.get("produce"),
+                        "protein": original_ingredients.get("protein"),
+                        "carb": original_ingredients.get("carb"),
+                        "dish_style": original_ingredients.get("dish_style"),
+                        "cuisine": original_ingredients.get("cuisine"),
+                    },
+                }
+            else:
+                # For recipe options generation
+                payload = {
+                    "usr": request.user.username if request.user.is_authenticated else "guest",
+                    "task": "get_options",
+                    "ingredients": {
+                        "title": form_data.get("title"),
+                        "produce": form_data.get("produce"),
+                        "protein": form_data.get("protein"),
+                        "carb": form_data.get("carb"),
+                        "dish_style": form_data.get("dish_style"),
+                        "cuisine": form_data.get("cuisine"),
+                    },
+                }
             
             print(f"Payload prepared: {payload}", flush=True)
             logger.error(f"Payload prepared: {payload}")
@@ -182,3 +202,27 @@ def recipe_options(request, prompt_id):
             return JsonResponse({"error": "Failed to fetch full recipe details."}, status=500)
 
     return JsonResponse({"error": "Invalid request."}, status=400)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CreateRecipeView(APIView):
+    """
+    Creates a recipe record in the database from Lambda response.
+    """
+    def post(self, request, *args, **kwargs):
+        try:
+            recipe_data = request.data
+            
+            # Create recipe record in database
+            recipe = Recipe.objects.create(
+                title=recipe_data.get("title"),
+                description=recipe_data.get("description"),
+                ingredients=recipe_data.get("ingredients", []),
+                instructions=recipe_data.get("instructions", []),
+                user=request.user if request.user.is_authenticated else None,
+            )
+            
+            return Response({"recipe_id": recipe.id}, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            logger.error(f"Error creating recipe: {str(e)}")
+            return Response({"error": "Failed to create recipe"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
