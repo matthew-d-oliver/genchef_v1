@@ -8,7 +8,7 @@ This is a Django project named **genchef_v1** designed to manage grocery-related
 - User authentication and management (future update)
 - Admin interface for managing data (maybe?)
 - Static file handling with S3 integration
-- Docker support for containerization
+- Docker support for containerization (not yet)
 
 ## Installation
 1. Clone the repository:
