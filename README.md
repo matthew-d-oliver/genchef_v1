@@ -5,8 +5,8 @@ Genchef_v1 # genchef_v1
 This is a Django project named **genchef_v1** designed to manage grocery-related functionalities. It includes a core application that handles the main features of the project.
 
 ## Features
-- User authentication and management
-- Admin interface for managing data
+- User authentication and management (future update)
+- Admin interface for managing data (maybe?)
 - Static file handling with S3 integration
 - Docker support for containerization
 
